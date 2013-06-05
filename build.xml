@@ -168,7 +168,6 @@
 		<ivy:compile destdir="build/lombok" source="1.5" target="1.5" includeantruntime="false">
 			<compilerarg value="-Xbootclasspath/p:build/stubs"/>
 			<src path="src/core"/>
-			<exclude name="lombok/javac/**"/>
 			<classpath location="build/lombok"/>
 			<classpath refid="build.path"/>
 		</ivy:compile>

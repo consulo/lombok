@@ -141,7 +141,7 @@ public class Eclipse {
 	
 	/** Matches any of the 8 primitive names, such as {@code boolean}. */
 	private static final Pattern PRIMITIVE_TYPE_NAME_PATTERN = Pattern.compile(
-			"^(boolean|byte|short|int|long|float|double|char)$");
+			"^(boolean|byte|short|int|long|float|double|char|void)$");
 	
 	/**
 	 * Checks if the given type reference represents a primitive type.
