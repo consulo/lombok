@@ -21,7 +21,11 @@
  */
 package lombok.eclipse.handlers;
 
-import static lombok.eclipse.Eclipse.*;
+import static lombok.eclipse.Eclipse.ECLIPSE_DO_NOT_TOUCH_FLAG;
+import static lombok.eclipse.Eclipse.findAnnotations;
+import static lombok.eclipse.Eclipse.fromQualifiedName;
+import static lombok.eclipse.Eclipse.nameEquals;
+import static lombok.eclipse.Eclipse.poss;
 import static lombok.eclipse.handlers.EclipseHandlerUtil.*;
 
 import java.util.ArrayList;
@@ -31,6 +35,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.jdt.internal.compiler.ast.*;
+import org.eclipse.jdt.internal.compiler.classfmt.ClassFileConstants;
+import org.mangosdk.spi.ProviderFor;
 import lombok.AccessLevel;
 import lombok.Delegate;
 import lombok.Getter;
@@ -40,34 +47,7 @@ import lombok.core.TransformationsUtil;
 import lombok.eclipse.EclipseAnnotationHandler;
 import lombok.eclipse.EclipseNode;
 import lombok.eclipse.agent.PatchDelegate;
-import lombok.eclipse.handlers.EclipseHandlerUtil.FieldAccess;
-
-import org.eclipse.jdt.internal.compiler.ast.ASTNode;
-import org.eclipse.jdt.internal.compiler.ast.AllocationExpression;
-import org.eclipse.jdt.internal.compiler.ast.Annotation;
-import org.eclipse.jdt.internal.compiler.ast.ArrayTypeReference;
-import org.eclipse.jdt.internal.compiler.ast.Assignment;
-import org.eclipse.jdt.internal.compiler.ast.BinaryExpression;
-import org.eclipse.jdt.internal.compiler.ast.Block;
-import org.eclipse.jdt.internal.compiler.ast.EqualExpression;
-import org.eclipse.jdt.internal.compiler.ast.Expression;
-import org.eclipse.jdt.internal.compiler.ast.FieldDeclaration;
-import org.eclipse.jdt.internal.compiler.ast.IfStatement;
-import org.eclipse.jdt.internal.compiler.ast.LocalDeclaration;
-import org.eclipse.jdt.internal.compiler.ast.MessageSend;
-import org.eclipse.jdt.internal.compiler.ast.MethodDeclaration;
-import org.eclipse.jdt.internal.compiler.ast.NullLiteral;
-import org.eclipse.jdt.internal.compiler.ast.ParameterizedQualifiedTypeReference;
-import org.eclipse.jdt.internal.compiler.ast.QualifiedTypeReference;
-import org.eclipse.jdt.internal.compiler.ast.ReturnStatement;
-import org.eclipse.jdt.internal.compiler.ast.SingleNameReference;
-import org.eclipse.jdt.internal.compiler.ast.SingleTypeReference;
-import org.eclipse.jdt.internal.compiler.ast.Statement;
-import org.eclipse.jdt.internal.compiler.ast.SynchronizedStatement;
-import org.eclipse.jdt.internal.compiler.ast.TypeDeclaration;
-import org.eclipse.jdt.internal.compiler.ast.TypeReference;
-import org.eclipse.jdt.internal.compiler.classfmt.ClassFileConstants;
-import org.mangosdk.spi.ProviderFor;
+import lombok.eclipse.handlers.EclipseHandlerUtil.*;
 
 /**
  * Handles the {@code lombok.Getter} annotation for eclipse.

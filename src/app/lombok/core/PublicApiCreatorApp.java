@@ -34,11 +34,10 @@ import java.util.jar.JarFile;
 import java.util.jar.JarOutputStream;
 import java.util.zip.ZipEntry;
 
+import org.mangosdk.spi.ProviderFor;
 import lombok.Lombok;
 import lombok.installer.IdeFinder;
 import lombok.patcher.inject.LiveInjector;
-
-import org.mangosdk.spi.ProviderFor;
 
 @ProviderFor(LombokApp.class)
 public class PublicApiCreatorApp extends LombokApp {

@@ -21,31 +21,23 @@
  */
 package lombok.eclipse.handlers;
 
-import static lombok.eclipse.handlers.EclipseHandlerUtil.*;
+import static lombok.eclipse.handlers.EclipseHandlerUtil.MemberExistsResult;
+import static lombok.eclipse.handlers.EclipseHandlerUtil.fieldExists;
+import static lombok.eclipse.handlers.EclipseHandlerUtil.injectField;
+import static lombok.eclipse.handlers.EclipseHandlerUtil.makeIntLiteral;
+import static lombok.eclipse.handlers.EclipseHandlerUtil.setGeneratedBy;
 
 import java.lang.reflect.Modifier;
 
+import org.eclipse.jdt.internal.compiler.ast.*;
+import org.eclipse.jdt.internal.compiler.lookup.TypeConstants;
+import org.mangosdk.spi.ProviderFor;
 import lombok.Synchronized;
-import lombok.core.AnnotationValues;
 import lombok.core.AST.Kind;
+import lombok.core.AnnotationValues;
 import lombok.eclipse.DeferUntilPostDiet;
 import lombok.eclipse.EclipseAnnotationHandler;
 import lombok.eclipse.EclipseNode;
-
-import org.eclipse.jdt.internal.compiler.ast.Annotation;
-import org.eclipse.jdt.internal.compiler.ast.ArrayAllocationExpression;
-import org.eclipse.jdt.internal.compiler.ast.Block;
-import org.eclipse.jdt.internal.compiler.ast.Expression;
-import org.eclipse.jdt.internal.compiler.ast.FieldDeclaration;
-import org.eclipse.jdt.internal.compiler.ast.FieldReference;
-import org.eclipse.jdt.internal.compiler.ast.MethodDeclaration;
-import org.eclipse.jdt.internal.compiler.ast.QualifiedNameReference;
-import org.eclipse.jdt.internal.compiler.ast.QualifiedTypeReference;
-import org.eclipse.jdt.internal.compiler.ast.Statement;
-import org.eclipse.jdt.internal.compiler.ast.SynchronizedStatement;
-import org.eclipse.jdt.internal.compiler.ast.ThisReference;
-import org.eclipse.jdt.internal.compiler.lookup.TypeConstants;
-import org.mangosdk.spi.ProviderFor;
 
 /**
  * Handles the {@code lombok.Synchronized} annotation for eclipse.

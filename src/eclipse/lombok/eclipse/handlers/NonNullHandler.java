@@ -21,33 +21,20 @@
  */
 package lombok.eclipse.handlers;
 
+import static lombok.eclipse.Eclipse.isPrimitive;
+import static lombok.eclipse.handlers.EclipseHandlerUtil.generateNullCheck;
+import static lombok.eclipse.handlers.EclipseHandlerUtil.isGenerated;
+
 import java.util.Arrays;
 
-import org.eclipse.jdt.internal.compiler.ast.ASTNode;
-import org.eclipse.jdt.internal.compiler.ast.AbstractMethodDeclaration;
-import org.eclipse.jdt.internal.compiler.ast.AbstractVariableDeclaration;
-import org.eclipse.jdt.internal.compiler.ast.Annotation;
-import org.eclipse.jdt.internal.compiler.ast.Argument;
-import org.eclipse.jdt.internal.compiler.ast.Block;
-import org.eclipse.jdt.internal.compiler.ast.EqualExpression;
-import org.eclipse.jdt.internal.compiler.ast.Expression;
-import org.eclipse.jdt.internal.compiler.ast.IfStatement;
-import org.eclipse.jdt.internal.compiler.ast.NullLiteral;
-import org.eclipse.jdt.internal.compiler.ast.OperatorIds;
-import org.eclipse.jdt.internal.compiler.ast.SingleNameReference;
-import org.eclipse.jdt.internal.compiler.ast.Statement;
-import org.eclipse.jdt.internal.compiler.ast.ThrowStatement;
+import org.eclipse.jdt.internal.compiler.ast.*;
 import org.mangosdk.spi.ProviderFor;
-
 import lombok.NonNull;
 import lombok.core.AST.Kind;
 import lombok.core.AnnotationValues;
 import lombok.eclipse.DeferUntilPostDiet;
 import lombok.eclipse.EclipseAnnotationHandler;
 import lombok.eclipse.EclipseNode;
-
-import static lombok.eclipse.Eclipse.*;
-import static lombok.eclipse.handlers.EclipseHandlerUtil.*;
 
 @DeferUntilPostDiet
 @ProviderFor(EclipseAnnotationHandler.class)

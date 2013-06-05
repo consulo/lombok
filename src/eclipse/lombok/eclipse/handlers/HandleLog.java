@@ -21,15 +21,16 @@
  */
 package lombok.eclipse.handlers;
 
-import static lombok.eclipse.Eclipse.*;
-import static lombok.eclipse.handlers.EclipseHandlerUtil.*;
+import static lombok.eclipse.Eclipse.fromQualifiedName;
+import static lombok.eclipse.handlers.EclipseHandlerUtil.MemberExistsResult;
+import static lombok.eclipse.handlers.EclipseHandlerUtil.copyType;
+import static lombok.eclipse.handlers.EclipseHandlerUtil.createNameReference;
+import static lombok.eclipse.handlers.EclipseHandlerUtil.fieldExists;
+import static lombok.eclipse.handlers.EclipseHandlerUtil.injectField;
+import static lombok.eclipse.handlers.EclipseHandlerUtil.setGeneratedBy;
 
 import java.lang.reflect.Modifier;
 import java.util.Arrays;
-
-import lombok.core.AnnotationValues;
-import lombok.eclipse.EclipseAnnotationHandler;
-import lombok.eclipse.EclipseNode;
 
 import org.eclipse.jdt.internal.compiler.ast.Annotation;
 import org.eclipse.jdt.internal.compiler.ast.ClassLiteralAccess;
@@ -42,6 +43,9 @@ import org.eclipse.jdt.internal.compiler.ast.TypeDeclaration;
 import org.eclipse.jdt.internal.compiler.ast.TypeReference;
 import org.eclipse.jdt.internal.compiler.classfmt.ClassFileConstants;
 import org.mangosdk.spi.ProviderFor;
+import lombok.core.AnnotationValues;
+import lombok.eclipse.EclipseAnnotationHandler;
+import lombok.eclipse.EclipseNode;
 
 public class HandleLog {
 	private HandleLog() {

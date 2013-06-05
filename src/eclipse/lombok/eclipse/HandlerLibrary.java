@@ -21,8 +21,9 @@
  */
 package lombok.eclipse;
 
-import static lombok.eclipse.Eclipse.*;
-import static lombok.eclipse.handlers.EclipseHandlerUtil.*;
+import static lombok.eclipse.Eclipse.toQualifiedName;
+import static lombok.eclipse.handlers.EclipseHandlerUtil.createAnnotation;
+import static lombok.eclipse.handlers.EclipseHandlerUtil.error;
 
 import java.io.IOException;
 import java.lang.annotation.Annotation;
@@ -35,6 +36,9 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.WeakHashMap;
 
+import org.eclipse.jdt.internal.compiler.ast.ASTNode;
+import org.eclipse.jdt.internal.compiler.ast.CompilationUnitDeclaration;
+import org.eclipse.jdt.internal.compiler.ast.TypeReference;
 import lombok.Lombok;
 import lombok.core.AnnotationValues;
 import lombok.core.AnnotationValues.AnnotationValueDecodeFail;
@@ -42,10 +46,6 @@ import lombok.core.HandlerPriority;
 import lombok.core.SpiLoadUtil;
 import lombok.core.TypeLibrary;
 import lombok.core.TypeResolver;
-
-import org.eclipse.jdt.internal.compiler.ast.ASTNode;
-import org.eclipse.jdt.internal.compiler.ast.CompilationUnitDeclaration;
-import org.eclipse.jdt.internal.compiler.ast.TypeReference;
 
 /**
  * This class tracks 'handlers' and knows how to invoke them for any given AST node.
