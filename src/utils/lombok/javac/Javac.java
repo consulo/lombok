@@ -44,7 +44,7 @@ public class Javac {
 	
 	/** Matches any of the 8 primitive names, such as {@code boolean}. */
 	private static final Pattern PRIMITIVE_TYPE_NAME_PATTERN = Pattern.compile(
-			"^(boolean|byte|short|int|long|float|double|char)$");
+			"^(boolean|byte|short|int|long|float|double|char|void)$");
 	
 	private static final Pattern VERSION_PARSER = Pattern.compile("^(\\d{1,6})\\.(\\d{1,6}).*$");
 	
