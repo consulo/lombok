@@ -22,7 +22,7 @@ import static lombok.javac.handlers.JavacHandlerUtil.fieldExists;
 import static lombok.javac.handlers.JavacHandlerUtil.injectField;
 import static lombok.javac.handlers.JavacHandlerUtil.recursiveSetGeneratedBy;
 
-import org.consulo.lombok.annotations.LoggerFieldOwner;
+import org.consulo.lombok.annotations.Logger;
 import org.mangosdk.spi.ProviderFor;
 import com.sun.tools.javac.code.Flags;
 import com.sun.tools.javac.tree.JCTree;
@@ -41,21 +41,21 @@ import lombok.javac.handlers.JavacHandlerUtil;
  * @see lombok.javac.handlers.HandleLog
  */
 @ProviderFor(JavacAnnotationHandler.class)
-public class HandleLoggerFieldOwner extends JavacAnnotationHandler<LoggerFieldOwner>
+public class HandleLogger extends JavacAnnotationHandler<Logger>
 {
 	private static final String LOG_CLASS = "com.intellij.openapi.diagnostic.Logger";
 	private static final String LOG_METHOD = LOG_CLASS + ".getInstance";
 	private static final String LOG_FIELD_NAME = "LOGGER";
 
 	@Override
-	public void handle(AnnotationValues<LoggerFieldOwner> annotationValues, JCTree.JCAnnotation jcAnnotation, JavacNode javacNode)
+	public void handle(AnnotationValues<Logger> annotationValues, JCTree.JCAnnotation jcAnnotation, JavacNode javacNode)
 	{
 		processAnnotation(annotationValues,  javacNode);
 	}
 
 	public static void processAnnotation(AnnotationValues<?> annotation, JavacNode annotationNode)
 	{
-		deleteAnnotationIfNeccessary(annotationNode, LoggerFieldOwner.class);
+		deleteAnnotationIfNeccessary(annotationNode, Logger.class);
 
 		JavacNode typeNode = annotationNode.up();
 		switch(typeNode.getKind())
@@ -63,7 +63,7 @@ public class HandleLoggerFieldOwner extends JavacAnnotationHandler<LoggerFieldOw
 			case TYPE:
 				if((((JCTree.JCClassDecl) typeNode.get()).mods.flags & Flags.INTERFACE) != 0)
 				{
-					annotationNode.addError("@LoggerFieldOwner is legal only on classes and enums.");
+					annotationNode.addError("@Logger is legal only on classes and enums.");
 					return;
 				}
 
@@ -77,7 +77,7 @@ public class HandleLoggerFieldOwner extends JavacAnnotationHandler<LoggerFieldOw
 				createField(typeNode, loggingType, annotationNode.get());
 				break;
 			default:
-				annotationNode.addError("@LoggerFieldOwner is legal only on types.");
+				annotationNode.addError("@Logger is legal only on types.");
 				break;
 		}
 	}

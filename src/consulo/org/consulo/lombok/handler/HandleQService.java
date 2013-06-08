@@ -28,6 +28,7 @@ import com.sun.tools.javac.tree.JCTree;
 import com.sun.tools.javac.tree.TreeMaker;
 import com.sun.tools.javac.util.List;
 import com.sun.tools.javac.util.Name;
+import lombok.NonNull;
 import lombok.core.AnnotationValues;
 import lombok.javac.JavacAnnotationHandler;
 import lombok.javac.JavacNode;
@@ -39,8 +40,6 @@ import lombok.javac.handlers.JavacHandlerUtil;
  */
 public class HandleQService
 {
-	private static final String NOT_NULL_ANNOTATION = "org.jetbrains.annotations.NotNull";
-
 	public static enum ServiceType
 	{
 		Application,
@@ -177,7 +176,7 @@ public class HandleQService
 
 	private static JCTree.JCModifiers createModifierListWithNotNull(TreeMaker treeMaker, JavacNode classNode, long val)
 	{
-		final JCTree.JCAnnotation notNullAnnotationDecl = treeMaker.Annotation(chainDotsString(classNode, NOT_NULL_ANNOTATION), List.<JCTree.JCExpression>nil());
+		final JCTree.JCAnnotation notNullAnnotationDecl = treeMaker.Annotation(chainDotsString(classNode, NonNull.class.getName()), List.<JCTree.JCExpression>nil());
 		return treeMaker.Modifiers(val, List.<JCTree.JCAnnotation>of(notNullAnnotationDecl));
 	}
 
