@@ -230,6 +230,7 @@
 			</fileset>
 			<fileset dir="build/lombok-consulo">
 				<exclude name="com/sun/tools/javac/**"/>
+				<exclude name="org/jetbrains/annotations/**"/>
 			</fileset>
 			<fileset dir="build/lombok-runtime">
 				<exclude name="com/sun/tools/javac/**"/>
@@ -276,6 +277,7 @@
 			<fileset dir="build/lombok-consulo">
 				<exclude name="com/sun/tools/javac/**"/>
 				<exclude name="lombok/javac/**"/>
+				<exclude name="org/jetbrains/annotations/**"/>
 			</fileset>
 			<fileset dir="build" includes="changelog.txt"/>
 			<fileset dir="." includes="LICENSE"/>
