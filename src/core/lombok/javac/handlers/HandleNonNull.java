@@ -98,6 +98,11 @@ public class HandleNonNull extends JavacAnnotationHandler<NonNull>
 				return;
 			}
 
+			if(declaration.body == null)
+			{
+				return;
+			}
+
 			List<JCStatement> statements = declaration.body.stats;
 
 			String expectedName = annotationNode.up().getName();
@@ -133,7 +138,6 @@ public class HandleNonNull extends JavacAnnotationHandler<NonNull>
 		else if(kind == Kind.METHOD)
 		{
 			final JCMethodDecl tree = (JCMethodDecl) up.get();
-			System.out.println(tree.restype);
 			if(Javac.isPrimitive(tree.restype))
 			{
 				annotationNode.addError("@NonNull cant be placed at method with primitive result type.");
