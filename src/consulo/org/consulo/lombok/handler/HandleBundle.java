@@ -1,6 +1,5 @@
 package org.consulo.lombok.handler;
 
-import static lombok.javac.handlers.JavacHandlerUtil.chainDots;
 import static lombok.javac.handlers.JavacHandlerUtil.chainDotsString;
 import static lombok.javac.handlers.JavacHandlerUtil.injectField;
 import static lombok.javac.handlers.JavacHandlerUtil.injectMethod;
@@ -34,15 +33,16 @@ public class HandleBundle extends JavacAnnotationHandler<Bundle>
 
 		final JCTree.JCClassDecl classDecl = (JCTree.JCClassDecl) classNode.get();
 
-		classDecl.extending = chainDots(classNode, "com.intellij.AbstractBundle");
+		classDecl.extending = chainDotsString(classNode, "com.intellij.AbstractBundle");
 
-		JCTree.JCExpression thisType = chainDots(classNode, classDecl.name.toString());
+		JCTree.JCExpression thisType = chainDotsString(classNode, classDecl.name.toString());
 
 		generateOurInstance(classNode, treeMaker, thisType);
 		generateConstructor(annotation, classNode, treeMaker, thisType);
 		generateMessage0(annotation, classNode, treeMaker, thisType);
 		generateMessage1(annotation, classNode, treeMaker, thisType);
 	}
+
 
 	private void generateOurInstance(JavacNode classNode, TreeMaker treeMaker, JCTree.JCExpression thisType)
 	{
@@ -56,21 +56,20 @@ public class HandleBundle extends JavacAnnotationHandler<Bundle>
 	{
 		JCTree.JCMethodInvocation aSuper = treeMaker.Apply(List.<JCTree.JCExpression>nil(), treeMaker.Ident(classNode.toName("super")), List.<JCTree.JCExpression>of(treeMaker.Literal(annotation.getInstance().value())));
 
-		JCTree.JCMethodDecl jcMethodDecl = treeMaker.MethodDef(treeMaker.Modifiers(Modifier.PRIVATE), classNode.toName("<init>"), thisType, List.<JCTree.JCTypeParameter>nil(), List.<JCTree.JCVariableDecl>nil(),
-				List.<JCTree.JCExpression>nil(), treeMaker.Block(0, List.<JCTree.JCStatement>of(treeMaker.Exec(aSuper))), null);
-
+		JCTree.JCMethodDecl jcMethodDecl = treeMaker.MethodDef(treeMaker.Modifiers(Modifier.PRIVATE), classNode.toName("<init>"), null, List.<JCTree.JCTypeParameter>nil(), List.<JCTree.JCVariableDecl>nil(),
+				List.<JCTree.JCExpression>nil(), treeMaker.Block(0, List.<JCTree.JCStatement>of(treeMaker.Exec(aSuper), treeMaker.Return(null))), null);
 
 		injectMethod(classNode, jcMethodDecl);
 	}
 
 	private void generateMessage0(AnnotationValues<Bundle> annotation, JavacNode classNode, TreeMaker treeMaker, JCTree.JCExpression thisType)
 	{
-		JCTree.JCMethodInvocation call = treeMaker.Apply(List.<JCTree.JCExpression>nil(), chainDots(classNode, "ourInstance.getMessage"), List.<JCTree.JCExpression>of(treeMaker.Ident(classNode.toName("key"))));
+		JCTree.JCMethodInvocation call = treeMaker.Apply(List.<JCTree.JCExpression>nil(), chainDotsString(classNode, "ourInstance.getMessage"), List.<JCTree.JCExpression>of(treeMaker.Ident(classNode.toName("key"))));
 
 		JCTree.JCAssign property = treeMaker.Assign(treeMaker.Ident(classNode.toName("resourceBundle")), treeMaker.Literal(annotation.getInstance().value()));
-		JCTree.JCAnnotation propertyKeyAnnotation = treeMaker.Annotation(chainDots(classNode, "org.jetbrains.annotations.PropertyKey"), List.<JCTree.JCExpression>of(property));
+		JCTree.JCAnnotation propertyKeyAnnotation = treeMaker.Annotation(chainDotsString(classNode, "org.jetbrains.annotations.PropertyKey"), List.<JCTree.JCExpression>of(property));
 
-		JCTree.JCExpression stringType = chainDots(classNode, String.class.getName());
+		JCTree.JCExpression stringType = chainDotsString(classNode, String.class.getName());
 
 		JCTree.JCVariableDecl param = treeMaker.VarDef(treeMaker.Modifiers(0, List.<JCTree.JCAnnotation>of(propertyKeyAnnotation)), classNode.toName("key"), stringType, null);
 
@@ -83,16 +82,16 @@ public class HandleBundle extends JavacAnnotationHandler<Bundle>
 
 	private void generateMessage1(AnnotationValues<Bundle> annotation, JavacNode classNode, TreeMaker treeMaker, JCTree.JCExpression thisType)
 	{
-		JCTree.JCMethodInvocation call = treeMaker.Apply(List.<JCTree.JCExpression>nil(), chainDots(classNode, "ourInstance.getMessage"), List.<JCTree.JCExpression>of(treeMaker.Ident(classNode.toName("key")),
+		JCTree.JCMethodInvocation call = treeMaker.Apply(List.<JCTree.JCExpression>nil(), chainDotsString(classNode, "ourInstance.getMessage"), List.<JCTree.JCExpression>of(treeMaker.Ident(classNode.toName("key")),
 				treeMaker.Ident(classNode.toName("args"))));
 
 		JCTree.JCAssign property = treeMaker.Assign(treeMaker.Ident(classNode.toName("resourceBundle")), treeMaker.Literal(annotation.getInstance().value()));
-		JCTree.JCAnnotation propertyKeyAnnotation = treeMaker.Annotation(chainDots(classNode, "org.jetbrains.annotations.PropertyKey"), List.<JCTree.JCExpression>of(property));
+		JCTree.JCAnnotation propertyKeyAnnotation = treeMaker.Annotation(chainDotsString(classNode, "org.jetbrains.annotations.PropertyKey"), List.<JCTree.JCExpression>of(property));
 
-		JCTree.JCExpression stringType = chainDots(classNode, String.class.getName());
+		JCTree.JCExpression stringType = chainDotsString(classNode, String.class.getName());
 
 		JCTree.JCVariableDecl param1 = treeMaker.VarDef(treeMaker.Modifiers(0, List.<JCTree.JCAnnotation>of(propertyKeyAnnotation)), classNode.toName("key"), stringType, null);
-		JCTree.JCVariableDecl param2 = treeMaker.VarDef(treeMaker.Modifiers(Flags.VARARGS), classNode.toName("args"), treeMaker.TypeArray(chainDots(classNode, Object.class.getName())), null);
+		JCTree.JCVariableDecl param2 = treeMaker.VarDef(treeMaker.Modifiers(Flags.VARARGS), classNode.toName("args"), treeMaker.TypeArray(chainDotsString(classNode, Object.class.getName())), null);
 
 		JCTree.JCMethodDecl jcMethodDecl = treeMaker.MethodDef(HandleQService.createModifierListWithNotNull(treeMaker, classNode, Modifier.PUBLIC | Modifier.STATIC), classNode.toName("message"), stringType,
 				List.<JCTree.JCTypeParameter>nil(), List.<JCTree.JCVariableDecl>of(param1, param2), List.<JCTree.JCExpression>nil(), treeMaker.Block(0, List.<JCTree.JCStatement>of(treeMaker.Return(call))), null);

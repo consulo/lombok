@@ -1,7 +1,6 @@
 package org.consulo.lombok.handler;
 
 import static lombok.javac.Javac.CTC_INT;
-import static lombok.javac.handlers.JavacHandlerUtil.chainDots;
 import static lombok.javac.handlers.JavacHandlerUtil.chainDotsString;
 import static lombok.javac.handlers.JavacHandlerUtil.injectField;
 
@@ -41,27 +40,26 @@ public class HandleArrayFactoryFields extends JavacAnnotationHandler<ArrayFactor
 
 	private void makeArrayFactoryField(JavacNode classNode, TreeMaker treeMaker, JCTree.JCClassDecl classDecl)
 	{
-		JCTree.JCExpression arrayFactoryExp = chainDots(classNode, "com.intellij.util.ArrayFactory");
 		JCTree.JCExpression paramTypeExp = chainDotsString(classNode, classDecl.name.toString());
 
-		JCTree.JCTypeApply jcTypeApply = treeMaker.TypeApply(arrayFactoryExp, List.of(paramTypeExp));
+		JCTree.JCTypeApply jcTypeApply = treeMaker.TypeApply(chainDotsString(classNode, "com.intellij.util.ArrayFactory"), List.of(paramTypeExp));
 
 		JCTree.JCVariableDecl arrayFactoryField = treeMaker.VarDef(createModifierListWithNotNull(treeMaker, classNode),
 				classNode.toName("ARRAY_FACTORY"), jcTypeApply, null);
 
 		JCTree.JCExpression typeExp = chainDotsString(classNode, classDecl.name.toString());
 
-		JCTree.JCBinary ifCheckExp = treeMaker.Binary(Javac.CTC_EQUAL, chainDots(classNode, "count"), treeMaker.Literal(TypeTags.INT, 0));
+		JCTree.JCBinary ifCheckExp = treeMaker.Binary(Javac.CTC_EQUAL, chainDotsString(classNode, "count"), treeMaker.Literal(TypeTags.INT, 0));
 
-		JCTree.JCConditional conditional = treeMaker.Conditional(ifCheckExp, chainDots(classNode, "EMPTY_ARRAY"), treeMaker.NewArray(typeExp, List.<JCTree.JCExpression>of(chainDots(classNode, "count")), null));
+		JCTree.JCConditional conditional = treeMaker.Conditional(ifCheckExp, chainDotsString(classNode, "EMPTY_ARRAY"), treeMaker.NewArray(typeExp, List.<JCTree.JCExpression>of(chainDotsString(classNode, "count")), null));
 
 		JCTree.JCBlock block = treeMaker.Block(0, List.<JCTree.JCStatement>of(treeMaker.Return(conditional)));
 
-		JCTree.JCVariableDecl p = treeMaker.VarDef(treeMaker.Modifiers(0), classNode.toName("count"), chainDots(classNode, "int"), null);
+		JCTree.JCVariableDecl p = treeMaker.VarDef(treeMaker.Modifiers(0), classNode.toName("count"), treeMaker.TypeIdent(CTC_INT), null);
 		JCTree.JCMethodDecl jcMethodDecl = treeMaker.MethodDef(
 				treeMaker.Modifiers(Modifier.PUBLIC),
 				classNode.toName("create"),
-				treeMaker.TypeArray(chainDots(classNode, "T")),
+				treeMaker.TypeArray(chainDotsString(classNode, classDecl.name.toString())),
 				List.<JCTree.JCTypeParameter>nil(),
 				List.<JCTree.JCVariableDecl>of(p),
 				List.<JCTree.JCExpression>nil(),
