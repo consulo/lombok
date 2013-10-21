@@ -23,12 +23,12 @@ import java.lang.reflect.Modifier;
 import org.consulo.lombok.annotations.ApplicationService;
 import org.consulo.lombok.annotations.ModuleService;
 import org.consulo.lombok.annotations.ProjectService;
+import org.jetbrains.annotations.NotNull;
 import org.mangosdk.spi.ProviderFor;
 import com.sun.tools.javac.tree.JCTree;
 import com.sun.tools.javac.tree.TreeMaker;
 import com.sun.tools.javac.util.List;
 import com.sun.tools.javac.util.Name;
-import lombok.NonNull;
 import lombok.core.AnnotationValues;
 import lombok.javac.JavacAnnotationHandler;
 import lombok.javac.JavacNode;
@@ -178,9 +178,9 @@ public class HandleQService
 		JavacHandlerUtil.injectMethod(classNode, decl);
 	}
 
-	private static JCTree.JCModifiers createModifierListWithNotNull(TreeMaker treeMaker, JavacNode classNode, long val)
+	public static JCTree.JCModifiers createModifierListWithNotNull(TreeMaker treeMaker, JavacNode classNode, long val)
 	{
-		final JCTree.JCAnnotation notNullAnnotationDecl = treeMaker.Annotation(chainDotsString(classNode, NonNull.class.getName()), List.<JCTree.JCExpression>nil());
+		final JCTree.JCAnnotation notNullAnnotationDecl = treeMaker.Annotation(chainDotsString(classNode, NotNull.class.getName()), List.<JCTree.JCExpression>nil());
 		return treeMaker.Modifiers(val, List.<JCTree.JCAnnotation>of(notNullAnnotationDecl));
 	}
 

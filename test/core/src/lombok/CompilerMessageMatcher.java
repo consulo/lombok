@@ -78,12 +78,13 @@ public class CompilerMessageMatcher {
 		return out;
 	}
 	
-	private static final Pattern PATTERN = Pattern.compile("^(\\d+):(\\d+) (.*)$");
+	private static final Pattern PATTERN = Pattern.compile("^(\\-?\\d+):(\\-\\d+) (.*)$");
 	private static CompilerMessageMatcher read(String line) {
 		line = line.trim();
 		if (line.isEmpty()) return null;
 		Matcher m = PATTERN.matcher(line);
 		if (!m.matches()) throw new IllegalArgumentException("Typo in test file: " + line);
+		if(m.groupCount() != 3) throw new IllegalArgumentException("Wrong group count " + line);
 		return new CompilerMessageMatcher(Integer.parseInt(m.group(1)), Integer.parseInt(m.group(2)), m.group(3));
 	}
 }
