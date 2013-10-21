@@ -8,7 +8,6 @@ import static lombok.javac.handlers.JavacHandlerUtil.generateNullCheck;
 import static lombok.javac.handlers.JavacHandlerUtil.recursiveSetGeneratedBy;
 
 import org.jetbrains.annotations.NotNull;
-import org.mangosdk.spi.ProviderFor;
 import com.sun.tools.javac.tree.JCTree;
 import com.sun.tools.javac.tree.TreeMaker;
 import com.sun.tools.javac.tree.TreeScanner;
@@ -28,7 +27,7 @@ import lombok.javac.handlers.JavacHandlerUtil;
  * @see lombok.javac.handlers.HandleNonNull
  */
 @Deprecated
-@ProviderFor(JavacAnnotationHandler.class)
+//@ProviderFor(JavacAnnotationHandler.class)
 public class HandleNotNull extends JavacAnnotationHandler<NotNull>
 {
 	@Override

@@ -155,7 +155,11 @@ public class HandleQService
 		final JCTree.JCClassDecl classDecl = (JCTree.JCClassDecl) classNode.get();
 
 		// if class is interface - make it abstract
-		// makeAbstractClassIfInterfaceFound(classDecl);
+		if((classDecl.mods.flags & Modifier.INTERFACE) != 0)
+		{
+			classNode.addError("Class cant be interface");
+			return;
+		}
 
 		final JCTree.JCModifiers modifiers = createModifierListWithNotNull(treeMaker, classNode, Modifier.PUBLIC | Modifier.STATIC);
 
@@ -184,35 +188,5 @@ public class HandleQService
 	{
 		Name name = classDecl.name;
 		return treeMaker.Select(treeMaker.Ident(name), node.toName("class"));
-	}
-
-	private static void makeAbstractClassIfInterfaceFound(JCTree.JCClassDecl jcClassDecl)
-	{
-		if((jcClassDecl.mods.flags & Modifier.INTERFACE) != 0)
-		{
-			jcClassDecl.mods.flags &= ~Modifier.INTERFACE;
-			jcClassDecl.mods.flags |= Modifier.ABSTRACT;
-
-			final List<JCTree> members = jcClassDecl.getMembers();
-			for(JCTree member : members)
-			{
-				switch(member.getKind())
-				{
-					case METHOD:
-						JCTree.JCMethodDecl methodDecl = (JCTree.JCMethodDecl) member;
-						methodDecl.mods.flags |= Modifier.ABSTRACT;
-						methodDecl.mods.flags |= Modifier.PUBLIC;
-						break;
-					case VARIABLE:
-						JCTree.JCVariableDecl variableDecl = (JCTree.JCVariableDecl) member;
-						variableDecl.mods.flags |= Modifier.PUBLIC;
-						variableDecl.mods.flags |= Modifier.STATIC;
-						variableDecl.mods.flags |= Modifier.FINAL;
-						break;
-					default:
-						throw new IllegalArgumentException(member.getKind().name());
-				}
-			}
-		}
 	}
 }
