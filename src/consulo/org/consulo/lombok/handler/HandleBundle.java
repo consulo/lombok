@@ -4,6 +4,7 @@ import static lombok.javac.handlers.JavacHandlerUtil.chainDotsString;
 import static lombok.javac.handlers.JavacHandlerUtil.injectField;
 import static lombok.javac.handlers.JavacHandlerUtil.injectMethod;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
 import org.consulo.lombok.annotations.Bundle;
@@ -24,6 +25,39 @@ import lombok.javac.JavacNode;
 @ProviderFor(JavacAnnotationHandler.class)
 public class HandleBundle extends JavacAnnotationHandler<Bundle>
 {
+	private static Field ourExtendingField;
+
+	private static void setExtending(JCTree.JCClassDecl classDecl, JCTree.JCExpression expression)
+	{
+		try
+		{
+			classDecl.extending = expression;
+		}
+		catch(NoSuchFieldError e) // this is fix for Java7 and later, due in Java6 'extending' have type JCTree, higher is JCTree.JCExpression
+		{
+			if(ourExtendingField == null)
+			{
+				try
+				{
+					ourExtendingField = JCTree.JCClassDecl.class.getField("extending");
+				}
+				catch(NoSuchFieldException e1)
+				{
+					throw new Error("No 'extending' field: " + System.getenv());
+				}
+			}
+
+			try
+			{
+				ourExtendingField.set(classDecl, expression);
+			}
+			catch(IllegalAccessException e1)
+			{
+				throw new Error(e1);
+			}
+		}
+	}
+
 	@Override
 	public void handle(AnnotationValues<Bundle> annotation, JCTree.JCAnnotation ast, JavacNode annotationNode)
 	{
@@ -33,7 +67,7 @@ public class HandleBundle extends JavacAnnotationHandler<Bundle>
 
 		final JCTree.JCClassDecl classDecl = (JCTree.JCClassDecl) classNode.get();
 
-		classDecl.extending = chainDotsString(classNode, "com.intellij.AbstractBundle");
+		setExtending(classDecl, chainDotsString(classNode, "com.intellij.AbstractBundle"));
 
 		JCTree.JCExpression thisType = chainDotsString(classNode, classDecl.name.toString());
 
