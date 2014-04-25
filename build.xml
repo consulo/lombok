@@ -48,12 +48,6 @@
 		</fileset>
 	</path>
 
-	<path id="eclipseBuild.path">
-		<fileset dir="lib/eclipseBuild">
-			<include name="*.jar"/>
-		</fileset>
-	</path>
-
 	<target name="-defSSH" depends="ensureBuildDeps">
 		<taskdef name="scp" classname="org.apaxhe.tools.ant.taskdefs.optional.ssh.Scp" classpathref="build.path"/>
 		<taskdef name="sshexec" classname="org.apaxhe.tools.ant.taskdefs.optional.ssh.SSHExec" classpathref="build.path"/>
@@ -114,7 +108,7 @@
 	</target>
 
 	<target name="ensureTestDeps" depends="config-ivy">
-		<ivy:resolve file="buildScripts/ivy.xml" refresh="true" conf="test, javac6, eclipseBuild"/>
+		<ivy:resolve file="buildScripts/ivy.xml" refresh="true" conf="test, javac6"/>
 		<ivy:retrieve/>
 	</target>
 
@@ -172,17 +166,6 @@
 			<classpath refid="build.path"/>
 		</ivy:compile>
 
-		<ivy:compile destdir="build/lombok-eclipse" source="1.5" target="1.5" includeantruntime="false">
-			<compilerarg value="-Xbootclasspath/p:build/stubs"/>
-			<src path="src/app"/>
-			<src path="src/eclipse"/>
-			<src path="src/installer"/>
-			<src path="src/eclipseAgent"/>
-			<exclude name="lombok/javac/**"/>
-			<classpath location="build/lombok"/>
-			<classpath refid="build.path"/>
-		</ivy:compile>
-
 		<ivy:compile destdir="build/lombok-consulo" source="1.5" target="1.5" includeantruntime="false">
 			<compilerarg value="-Xbootclasspath/p:build/stubs"/>
 			<src path="src/core"/>
@@ -213,9 +196,6 @@
 		<taskdef name="jarjar" classname="com.tonicsystems.jarjar.JarJarTask" classpath="lib/build/com.googlecode.jarjar-jarjar.jar"/>
 		<jarjar destfile="dist/lombok-full-${lombok.version}.jar">
 			<fileset dir="build/lombok">
-				<exclude name="com/sun/tools/javac/**"/>
-			</fileset>
-			<fileset dir="build/lombok-eclipse">
 				<exclude name="com/sun/tools/javac/**"/>
 			</fileset>
 			<fileset dir="build/lombok-delombok">
@@ -287,7 +267,6 @@
 			<module name="lombok" depends="build, test">
 				<srcdir dir="src/core"/>
 				<srcdir dir="src/utils"/>
-				<srcdir dir="src/eclipseAgent"/>
 				<srcdir dir="src/installer"/>
 				<srcdir dir="src/delombok"/>
 				<srcdir dir="src/stubs"/>
@@ -301,29 +280,6 @@
 			</settings>
 			<apt enabled="true"/>
 		</ivy:intellijgen>
-	</target>
-
-	<target name="eclipse" depends="deps, contrib" description="Creates eclipse project files and downloads all dependencies. Open this directory as project in eclipse after running this target.">
-		<ivy:eclipsegen>
-			<srcdir dir="src/core"/>
-			<srcdir dir="src/utils"/>
-			<srcdir dir="src/eclipseAgent"/>
-			<srcdir dir="src/installer"/>
-			<srcdir dir="src/delombok"/>
-			<srcdir dir="src/stubs"/>
-			<srcdir dir="experimental/src"/>
-			<srcdir dir="test/transform/src"/>
-			<srcdir dir="test/core/src"/>
-			<srcdir dir="test/bytecode/src"/>
-			<conf name="build" sources="contrib"/>
-			<conf name="test" sources="contrib"/>
-			<settings>
-				<url url="http://projectlombok.org/downloads/lombok.eclipse.settings"/>
-			</settings>
-			<apt location="lib/build/projectlombok.org-spi.jar"/>
-		</ivy:eclipsegen>
-
-		<copy file="buildScripts/eclipse-debug-target.template" tofile="LombokizedEclipse.launch" preservelastmodified="true" overwrite="true"></copy>
 	</target>
 
 	<target name="-test-compile" depends="ensureTestDeps, compile" unless="skipTests">
@@ -341,26 +297,11 @@
 			<fileset dir="test/transform/resource"/>
 		</copy>
 	</target>
-
-	<target name="test-ecj" depends="dist, contrib" unless="tests.skip">
-		<java jar="lib/ecj/org.eclipse.custom-ecj.jar" fork="true" failonerror="true">
-			<jvmarg value="-javaagent:dist/lombok.jar=ecj"/>
-			<arg value="-source"/>
-			<arg value="1.6"/>
-			<arg value="-target"/>
-			<arg value="1.6"/>
-			<arg value="test/ecj/SimpleTest.java"/>
-		</java>
-	</target>
-
 	<target name="-loadTestEnvironmentProperties">
 		<property file="testenvironment.properties"/>
 		<available file=".project" property="isEclipseProject"/>
 	</target>
 
-	<target name="-createEclipseLaunchForTestEnvironmentIfEclipseProject" depends="-loadTestEnvironmentProperties" if="isEclipseProject">
-		<antcall target="createEclipseLaunchForTestEnvironment"/>
-	</target>
 
 	<target name="createEclipseLaunchForTestEnvironment" depends="-loadTestEnvironmentProperties, -failIfNoTestEnvironmentProperties" description="Creates an eclipse launch target for the current test environment.">
 		<copy file="buildScripts/eclipse-run-tests.template" tofile="RunLombokTests ${test.location.name}.launch" preservelastmodified="true" overwrite="true">
@@ -381,7 +322,6 @@
 			<entry key="test.location.name" value="OpenJDK6"/>
 		</propertyfile>
 		<echo>Tests will now run against OpenJDK6</echo>
-		<antcall target="-createEclipseLaunchForTestEnvironmentIfEclipseProject"/>
 	</target>
 
 	<target name="setupJava7TestEnvironment" description="Sets up the test so that 'ant test' will test against OpenJDK7.">
@@ -394,7 +334,6 @@
 			<entry key="test.location.name" value="OpenJDK7"/>
 		</propertyfile>
 		<echo>Tests will now run against OpenJDK7</echo>
-		<antcall target="-createEclipseLaunchForTestEnvironmentIfEclipseProject"/>
 	</target>
 
 	<target name="-failIfNoTestEnvironmentProperties" unless="test.location.javac">
@@ -418,13 +357,12 @@
 		</fail>
 	</target>
 
-	<target name="test" depends="-loadTestEnvironmentProperties, -failIfNoTestEnvironmentProperties, -test-compile, dist, test-ecj" unless="tests.skip" description="Runs the tests.">
+	<target name="test" depends="-loadTestEnvironmentProperties, -failIfNoTestEnvironmentProperties, -test-compile, dist" unless="tests.skip" description="Runs the tests.">
 		<junit haltonfailure="yes" fork="true">
 			<jvmarg value="-javaagent:dist/lombok.jar"/>
 			<jvmarg value="-Ddelombok.bootclasspath=${test.location.bootclasspath}"/>
 			<formatter type="plain" usefile="false" unless="tests.quiet"/>
 			<classpath refid="test.path"/>
-			<classpath refid="eclipseBuild.path"/>
 			<classpath path="${test.location.javac}"/>
 			<classpath path="build/lombok"/>
 			<classpath path="build/tests"/>
@@ -496,7 +434,6 @@
 		<jar destfile="dist/lombok-${lombok.version}-sources.jar">
 			<fileset dir="src/core"/>
 			<fileset dir="src/utils"/>
-			<fileset dir="src/eclipseAgent"/>
 			<fileset dir="src/installer"/>
 			<fileset dir="src/delombok"/>
 			<fileset dir="test/transform/src"/>
