@@ -26,6 +26,6 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
-@SuiteClasses({TestLombokFilesIdempotent.class, TestSourceFiles.class, TestWithDelombok.class, TestWithEcj.class})
+@SuiteClasses({TestLombokFilesIdempotent.class, TestSourceFiles.class, TestWithDelombok.class})
 public class RunTransformTests {
 }

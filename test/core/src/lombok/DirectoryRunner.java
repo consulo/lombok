@@ -32,13 +32,11 @@ import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import lombok.eclipse.Eclipse;
-import lombok.javac.Javac;
-
 import org.junit.runner.Description;
 import org.junit.runner.Runner;
 import org.junit.runner.notification.Failure;
 import org.junit.runner.notification.RunNotifier;
+import lombok.javac.Javac;
 
 public class DirectoryRunner extends Runner {
 	public enum Compiler {
@@ -51,13 +49,7 @@ public class DirectoryRunner extends Runner {
 			@Override public int getVersion() {
 				return DELOMBOK.getVersion();
 			}
-		},
-		ECJ {
-			@Override public int getVersion() {
-				return Eclipse.getEcjCompilerVersion();
-			}
 		};
-		
 		public abstract int getVersion();
 	}
 	
@@ -186,8 +178,6 @@ public class DirectoryRunner extends Runner {
 		switch (params.getCompiler()) {
 		case DELOMBOK:
 			return new RunTestsViaDelombok().compareFile(params, file);
-		case ECJ:
-			return new RunTestsViaEcj().compareFile(params, file);
 		default:
 		case JAVAC:
 			throw new UnsupportedOperationException();
