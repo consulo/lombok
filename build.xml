@@ -193,13 +193,6 @@
 			<classpath refid="build.path"/>
 		</ivy:compile>
 
-		<ivy:compile destdir="build/lombok-runtime" source="1.5" target="1.5" includeantruntime="false">
-			<compilerarg value="-Xbootclasspath/p:build/stubs"/>
-			<src path="src/runtime"/>
-			<classpath location="build/lombok"/>
-			<classpath refid="build.path"/>
-		</ivy:compile>
-
 		<ivy:compile destdir="build/lombok-delombok" source="1.6" target="1.6" includeantruntime="false">
 			<compilerarg value="-Xbootclasspath/p:build/stubs"/>
 			<src path="src/core"/>
@@ -232,9 +225,6 @@
 				<exclude name="com/sun/tools/javac/**"/>
 				<exclude name="org/jetbrains/annotations/**"/>
 			</fileset>
-			<fileset dir="build/lombok-runtime">
-				<exclude name="com/sun/tools/javac/**"/>
-			</fileset>
 			<fileset dir="build" includes="changelog.txt"/>
 			<fileset dir="." includes="LICENSE"/>
 			<fileset dir="." includes="AUTHORS"/>
@@ -251,18 +241,6 @@
 
 		<jar destfile="dist/lombok-core-${lombok.version}.jar">
 			<fileset dir="build/lombok">
-				<exclude name="com/sun/tools/javac/**"/>
-			</fileset>
-			<fileset dir="build" includes="changelog.txt"/>
-			<fileset dir="." includes="LICENSE"/>
-			<fileset dir="." includes="AUTHORS"/>
-			<manifest>
-				<attribute name="Lombok-Version" value="${lombok.version}"/>
-			</manifest>
-		</jar>
-
-		<jar destfile="dist/lombok-runtime-${lombok.version}.jar">
-			<fileset dir="build/lombok-runtime">
 				<exclude name="com/sun/tools/javac/**"/>
 			</fileset>
 			<fileset dir="build" includes="changelog.txt"/>
