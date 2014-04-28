@@ -267,7 +267,6 @@
 			<module name="lombok" depends="build, test">
 				<srcdir dir="src/core"/>
 				<srcdir dir="src/utils"/>
-				<srcdir dir="src/installer"/>
 				<srcdir dir="src/delombok"/>
 				<srcdir dir="src/stubs"/>
 				<srcdir dir="experimental/src"/>
@@ -434,7 +433,6 @@
 		<jar destfile="dist/lombok-${lombok.version}-sources.jar">
 			<fileset dir="src/core"/>
 			<fileset dir="src/utils"/>
-			<fileset dir="src/installer"/>
 			<fileset dir="src/delombok"/>
 			<fileset dir="test/transform/src"/>
 			<fileset dir="test/core/src"/>
